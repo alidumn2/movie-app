@@ -1,0 +1,56 @@
+/* Overlay Güncellemesi */
+.overlay {
+  position: absolute;
+  background: rgba(0, 0, 0, 0.85); /* Biraz daha koyulaştırdık ki yazı okunsun */
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  display: flex;
+  flex-direction: column; /* Alt alta sırala */
+  align-items: center;
+  justify-content: center; /* Ortala */
+  padding: 20px; /* Kenarlardan boşluk bırak */
+  text-align: center;
+  overflow: hidden; /* Taşarsa gizle */
+}
+
+/* Mouse gelince görünür yap */
+.movie-card:hover .overlay {
+  opacity: 1;
+}
+
+/* Buton Tasarımı */
+.fav-btn {
+  color: white;
+  font-weight: bold;
+  border: 2px solid white;
+  padding: 8px 15px;
+  border-radius: 50px;
+  margin-bottom: 15px; /* Yazı ile buton arası boşluk */
+  background-color: rgba(0,0,0,0.5);
+  transition: all 0.2s;
+}
+
+.fav-btn:hover {
+  background-color: white;
+  color: black;
+}
+
+.movie-overview {
+  color: #ddd; 
+  font-size: 0.9rem;
+  line-height: 1.4;
+  max-height: 60%; 
+  overflow-y: auto; 
+}
+
+.movie-overview::-webkit-scrollbar {
+  width: 5px;
+}
+.movie-overview::-webkit-scrollbar-thumb {
+  background: #555; 
+  border-radius: 5px;
+}

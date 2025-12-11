@@ -8,7 +8,7 @@ const Navbar = () => {
   return (
     <nav className="navbar">
       <div className="navbar-brand">
-        <h1>React Movie App</h1>
+        <h1><Link to="/">React Movie App</Link></h1>
       </div>
       
       <div className="navbar-links">

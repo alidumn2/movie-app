@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
 import axios from 'axios';
 import '../style/MovieDetail.css';
+import { useParams, Link } from 'react-router-dom';
 
 const MovieDetail = () => {
     const { id } = useParams();
@@ -27,7 +27,7 @@ const MovieDetail = () => {
         };
 
         fetchMovieDetails();
-        window.scrollTo(0, 0); // Scroll to top on load
+        window.scrollTo(0, 0);
     }, [id, DETAIL_URL]);
 
     if (loading) return <div className="loading-text">Loading Details...</div>;
@@ -35,7 +35,6 @@ const MovieDetail = () => {
 
     return (
         <div className="detail-container">
-            {/* Backdrop Image */}
             <div
                 className="backdrop"
                 style={{ backgroundImage: `url(${IMG_URL}${movie.backdrop_path})` }}
@@ -90,3 +89,5 @@ const MovieDetail = () => {
 };
 
 export default MovieDetail;
+
+

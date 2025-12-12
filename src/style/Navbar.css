@@ -1,9 +1,6 @@
-/* Glassmorphism Navbar */
 .navbar {
   background: rgba(26, 26, 46, 0.85);
-  /* Semi-transparent dark bg */
   backdrop-filter: blur(12px);
-  /* Blur effect for glass look */
   -webkit-backdrop-filter: blur(12px);
   display: flex;
   justify-content: space-between;
@@ -28,6 +25,7 @@
   letter-spacing: 1px;
   background: linear-gradient(90deg, #fff, #e94560);
   -webkit-background-clip: text;
+  background-clip: text;
   -webkit-text-fill-color: transparent;
   transition: opacity 0.3s;
 }
@@ -57,7 +55,6 @@
   color: #e94560;
 }
 
-/* Mobile responsive adjustments */
 @media (max-width: 600px) {
   .navbar {
     padding: 1rem;

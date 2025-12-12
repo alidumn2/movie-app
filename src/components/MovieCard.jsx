@@ -4,7 +4,6 @@ import '../style/MovieCard.css';
 
 const MovieCard = ({ movie, handleFavoriteClick, isFavorite }) => {
   const IMG_URL = "https://image.tmdb.org/t/p/w500";
-  // Backdrop URL removed as it's no longer used in the simplified hover
 
   return (
     <div className="movie-card">
@@ -25,12 +24,10 @@ const MovieCard = ({ movie, handleFavoriteClick, isFavorite }) => {
             <span className="release-date">{movie.release_date?.split('-')[0]}</span>
           </div>
 
-          {/* View Details Button */}
           <Link to={`/movie/${movie.id}`} className="detail-btn">
             View Details
           </Link>
 
-          {/* Favorite Button */}
           <button
             className={`fav-btn-secondary ${isFavorite ? 'active' : ''}`}
             onClick={(e) => {

@@ -1,56 +1,206 @@
-/* Overlay Güncellemesi */
-.overlay {
-  position: absolute;
-  background: rgba(0, 0, 0, 0.85); /* Biraz daha koyulaştırdık ki yazı okunsun */
-  width: 100%;
+/* Card Base */
+.movie-card {
+  background-color: #16213e;
+  border-radius: 12px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+  position: relative;
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  z-index: 1;
+  cursor: pointer;
   height: 100%;
-  top: 0;
-  left: 0;
-  opacity: 0;
-  transition: opacity 0.3s ease;
+  /* Fill the wrapper */
   display: flex;
-  flex-direction: column; /* Alt alta sırala */
-  align-items: center;
-  justify-content: center; /* Ortala */
-  padding: 20px; /* Kenarlardan boşluk bırak */
-  text-align: center;
-  overflow: hidden; /* Taşarsa gizle */
+  flex-direction: column;
+  overflow: hidden;
+  /* Contain everything */
 }
 
-/* Mouse gelince görünür yap */
+.movie-card:hover {
+  transform: scale(1.05);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
+  z-index: 100;
+  border-color: rgba(233, 69, 96, 0.5);
+}
+
+.card-poster {
+  width: 100%;
+  aspect-ratio: 2/3;
+  /* Enforce standard poster ratio */
+  object-fit: cover;
+  border-radius: 12px;
+  display: block;
+  transition: transform 0.3s;
+}
+
+/* Optional: Slight zoom on poster when hovering */
+.movie-card:hover .card-poster {
+  transform: scale(1.05);
+}
+
+/* Info seen when NOT hovering (bottom bar) */
+.movie-info {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem;
+  background: linear-gradient(to top, rgba(22, 33, 62, 1), rgba(22, 33, 62, 0.8));
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  border-bottom-left-radius: 12px;
+  border-bottom-right-radius: 12px;
+  z-index: 2;
+  transition: opacity 0.3s;
+}
+
+/* Hide original info bar on hover to make room for full overlay or keep it? 
+   User wants buttons to "come". Let's hide the bottom bar to show the overlay buttons cleanly. */
+.movie-card:hover .movie-info {
+  opacity: 0;
+}
+
+.movie-info h3 {
+  margin: 0;
+  font-size: 0.9rem;
+  color: white;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 80%;
+}
+
+.tag {
+  background-color: #0f3460;
+  padding: 0.25rem 0.5rem;
+  border-radius: 5px;
+  font-weight: bold;
+  font-size: 0.8rem;
+}
+
+.tag.green {
+  color: lightgreen;
+}
+
+.tag.red {
+  color: orange;
+}
+
+
+/* CONTAINED OVERLAY */
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(26, 26, 46, 0.85);
+  /* Dark semi-transparent background */
+  opacity: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  /* Center content vertically */
+  align-items: center;
+  padding: 20px;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(3px);
+  z-index: 10;
+}
+
 .movie-card:hover .overlay {
   opacity: 1;
 }
 
-/* Buton Tasarımı */
-.fav-btn {
+/* Hover Content Area */
+.hover-content {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.hover-title {
+  margin: 0 0 10px;
+  font-size: 1.1rem;
   color: white;
-  font-weight: bold;
-  border: 2px solid white;
-  padding: 8px 15px;
-  border-radius: 50px;
-  margin-bottom: 15px; /* Yazı ile buton arası boşluk */
-  background-color: rgba(0,0,0,0.5);
-  transition: all 0.2s;
+  line-height: 1.2;
+  font-weight: 700;
 }
 
-.fav-btn:hover {
-  background-color: white;
-  color: black;
-}
-
-.movie-overview {
-  color: #ddd; 
+.hover-meta {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
   font-size: 0.9rem;
-  line-height: 1.4;
-  max-height: 60%; 
-  overflow-y: auto; 
+  color: #ccc;
+  justify-content: center;
 }
 
-.movie-overview::-webkit-scrollbar {
-  width: 5px;
+
+/* Detail Button */
+.detail-btn {
+  display: inline-block;
+  width: 100%;
+  background: var(--accent-color);
+  color: white;
+  text-align: center;
+  padding: 12px;
+  border-radius: 50px;
+  /* Pill shape */
+  text-decoration: none;
+  font-weight: 600;
+  margin-bottom: 15px;
+  transition: all 0.2s;
+  box-shadow: 0 4px 15px rgba(233, 69, 96, 0.4);
+  transform: translateY(20px);
+  /* Slide up animation start */
+  opacity: 0;
 }
-.movie-overview::-webkit-scrollbar-thumb {
-  background: #555; 
-  border-radius: 5px;
+
+.movie-card:hover .detail-btn {
+  transform: translateY(0);
+  opacity: 1;
+  transition-delay: 0.1s;
+}
+
+.detail-btn:hover {
+  background: white;
+  color: var(--accent-color);
+  transform: translateY(-2px);
+}
+
+/* Secondary Favorite Button */
+.fav-btn-secondary {
+  width: 100%;
+  background: transparent;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  color: white;
+  padding: 10px;
+  border-radius: 50px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.9rem;
+  transition: all 0.2s;
+  transform: translateY(20px);
+  /* Slide up animation start */
+  opacity: 0;
+}
+
+.movie-card:hover .fav-btn-secondary {
+  transform: translateY(0);
+  opacity: 1;
+  transition-delay: 0.2s;
+}
+
+.fav-btn-secondary:hover {
+  border-color: white;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.fav-btn-secondary.active {
+  border-color: var(--accent-color);
+  color: var(--accent-color);
+  background: rgba(233, 69, 96, 0.1);
 }

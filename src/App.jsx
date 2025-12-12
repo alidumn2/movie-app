@@ -1,140 +1,198 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import axios from 'axios';
 import Navbar from './components/Navbar';
 import MovieCard from './components/MovieCard';
+import MovieDetail from './components/MovieDetail';
 import './App.css';
 
+// Move constants outside component to avoid dependency issues
+const API_KEY = process.env.REACT_APP_TMDB_API_KEY;
+const POPULAR_API = `https://api.themoviedb.org/3/discover/movie?sort_by=popularity.desc&api_key=${API_KEY}&language=en-US&page=1`;
+const SEARCH_API = `https://api.themoviedb.org/3/search/movie?api_key=${API_KEY}&language=en-US&query=`;
+const GENRE_LIST_API = `https://api.themoviedb.org/3/genre/movie/list?api_key=${API_KEY}&language=en-US`;
+const DISCOVER_API = `https://api.themoviedb.org/3/discover/movie?api_key=${API_KEY}&language=en-US&page=1&sort_by=popularity.desc`;
+
 function App() {
-  // Initialize state variables to manage application data (movies list, user favorites, and search input)
   const [movies, setMovies] = useState([]);
   const [favorites, setFavorites] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
+  const [genres, setGenres] = useState([]);
+  const [selectedGenre, setSelectedGenre] = useState(null);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false); // Mobile toggle
 
-  // Configuration for TMDB API (Base URL, API Key, and Endpoints)
-  const API_KEY = process.env.REACT_APP_TMDB_API_KEY;
-  const API_URL = `https://api.themoviedb.org/3/discover/movie?sort_by=popularity.desc&api_key=${API_KEY}&language=en-US&page=1`;
-  const SEARCH_API = `https://api.themoviedb.org/3/search/movie?api_key=${API_KEY}&language=en-US&query=`;
+  // Wrap in useCallback to ensure stability for useEffect options
+  const getMovies = useCallback(async (url) => {
+    try {
+      const res = await axios.get(url);
+      setMovies(res.data.results);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  }, []);
 
-  // useEffect hook triggers the initial API call and retrieves saved favorites from LocalStorage on mount
+  const getGenres = useCallback(async () => {
+    try {
+      const res = await axios.get(GENRE_LIST_API);
+      setGenres(res.data.genres);
+    } catch (error) {
+      console.error("Error fetching genres:", error);
+    }
+  }, []);
+
   useEffect(() => {
-    getMovies(API_URL);
-    
-    // Retrieve persisted favorites from LocalStorage to maintain state across reloads
+    getMovies(POPULAR_API);
+    getGenres();
+
     const movieFavorites = JSON.parse(localStorage.getItem('react-movie-app-favorites'));
     if (movieFavorites) {
       setFavorites(movieFavorites);
     }
-  }, [API_URL]);
+  }, [getMovies, getGenres]); // dependencies are now stable
 
-  // Helper function to persist the favorites list to the browser's LocalStorage
   const saveToLocalStorage = (items) => {
     localStorage.setItem('react-movie-app-favorites', JSON.stringify(items));
   };
 
-  // Asynchronous function to fetch movie data from the API using Axios
-  const getMovies = async (url) => {
-    try {
-      const res = await axios.get(url);
-      setMovies(res.data.results); // Update the local state with the fetched results
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    }
-  };
-
-  // Handles real-time search input changes and determines which API endpoint to call
   const handleSearch = (term) => {
-    setSearchTerm(term); // Update the controlled input state
+    setSearchTerm(term);
+    setSelectedGenre(null);
     if (term) {
-      getMovies(SEARCH_API + term); // Fetch specific movies based on the search query
+      getMovies(SEARCH_API + term);
     } else {
-      getMovies(API_URL); // Revert to the default popular movies list if input is empty
+      getMovies(POPULAR_API);
     }
   };
 
-  // Logic to toggle a movie's presence in the favorites list (Add/Remove)
-  const handleFavoriteAction = (movie) => {
-    // Check if the selected movie is already present in the favorites array
-    const isAlreadyFav = favorites.some(fav => fav.id === movie.id);
+  const handleGenreClick = (genreId) => {
+    const newGenreId = genreId === selectedGenre ? null : genreId;
+    setSelectedGenre(newGenreId);
+    setSearchTerm("");
+    setIsSidebarOpen(false); // Close sidebar on mobile when clicked
 
+    if (newGenreId) {
+      getMovies(`${DISCOVER_API}&with_genres=${newGenreId}`);
+    } else {
+      getMovies(POPULAR_API);
+    }
+  };
+
+  const handleFavoriteAction = (movie) => {
+    const isAlreadyFav = favorites.some(fav => fav.id === movie.id);
     let newFavoritesList;
     if (isAlreadyFav) {
-      // Remove operation: Filter out the movie matching the ID
       newFavoritesList = favorites.filter(fav => fav.id !== movie.id);
     } else {
-      // Add operation: Spread existing favorites and append the new movie object
       newFavoritesList = [...favorites, movie];
     }
-
-    setFavorites(newFavoritesList); // Update the React state
-    saveToLocalStorage(newFavoritesList); // Synchronize with LocalStorage
+    setFavorites(newFavoritesList);
+    saveToLocalStorage(newFavoritesList);
   };
 
   return (
-    // Wrap the application in Router to enable client-side navigation between views
     <Router>
       <div className="root-container">
         <Navbar />
-        
-        <Routes>
-          {/* --- HOME ROUTE: Displays Search Bar and Movie Grid --- */}
-          <Route path="/" element={
-            <>
-              <div className="search-container">
-                <input 
-                  type="text" 
-                  placeholder="Search for a movie..." 
-                  className="search-input"
-                  // Controlled Component: Input value is bound to state
-                  value={searchTerm}
-                  onChange={(e) => handleSearch(e.target.value)} 
-                />
-                <button className="search-btn" onClick={() => handleSearch(searchTerm)}>
-                  Search
-                </button>
-              </div>
 
-              <div className="movie-container">
-                {/* Render the list of movies if data is available */}
-                {movies.length > 0 && movies.map((movie) => {
-                  // Boolean flag to determine if the current movie is in favorites
-                  const isFav = favorites.some(f => f.id === movie.id);
-                  
-                  return (
-                    // Pass movie data and handler functions as props to the child component
-                    <MovieCard 
-                      key={movie.id} // Unique key prop for efficient list rendering
-                      movie={movie} 
-                      isFavorite={isFav} 
-                      handleFavoriteClick={handleFavoriteAction} 
+        <div className="main-layout">
+          {/* Sidebar for Categories */}
+          <aside className={`sidebar ${isSidebarOpen ? 'open' : ''}`}>
+            <h3 className="sidebar-title">Categories</h3>
+            <ul className="genre-list">
+              <li
+                className={selectedGenre === null ? 'active' : ''}
+                onClick={() => handleGenreClick(null)}
+              >
+                All Movies
+              </li>
+              {genres.map(genre => (
+                <li
+                  key={genre.id}
+                  className={selectedGenre === genre.id ? 'active' : ''}
+                  onClick={() => handleGenreClick(genre.id)}
+                >
+                  {genre.name}
+                </li>
+              ))}
+            </ul>
+          </aside>
+
+          {/* Mobile Sidebar Toggle */}
+          <button className="sidebar-toggle" onClick={() => setIsSidebarOpen(!isSidebarOpen)}>
+            {isSidebarOpen ? '✕' : '☰ Categories'}
+          </button>
+
+          {/* Main Content Area */}
+          <main className="content">
+            <Routes>
+              {/* --- HOME ROUTE --- */}
+              <Route path="/" element={
+                <>
+                  <div className="search-container">
+                    <input
+                      type="text"
+                      placeholder="Search for a movie..."
+                      className="search-input"
+                      value={searchTerm}
+                      onChange={(e) => handleSearch(e.target.value)}
                     />
-                  );
-                })}
-              </div>
-            </>
-          } />
+                    <button className="search-btn" onClick={() => handleSearch(searchTerm)}>
+                      Search
+                    </button>
+                  </div>
 
-          {/* --- FAVORITES ROUTE: Displays User's Saved Movies --- */}
-          <Route path="/favorites" element={
-            <div className="movie-container">
-              {/* Conditional Rendering: Show list if favorites exist, otherwise show fallback text */}
-              {favorites.length > 0 ? (
-                favorites.map((movie) => (
-                  <MovieCard 
-                    key={movie.id} 
-                    movie={movie} 
-                    isFavorite={true} // Hardcoded true since this is the favorites view
-                    handleFavoriteClick={handleFavoriteAction} 
-                  />
-                ))
-              ) : (
-                <h2 style={{color: 'white', textAlign: 'center', width: '100%'}}>
-                  No favorites yet! Add some movies from Home page.
-                </h2>
-              )}
-            </div>
-          } />
-        </Routes>
+                  <h2 className="section-title">
+                    {searchTerm ? `Results for "${searchTerm}"` :
+                      selectedGenre ? genres.find(g => g.id === selectedGenre)?.name : "Popular Movies"}
+                  </h2>
+
+                  <div className="movie-container">
+                    {movies.length > 0 ? movies.map((movie) => {
+                      const isFav = favorites.some(f => f.id === movie.id);
+                      return (
+                        <div key={movie.id} className="movie-wrapper">
+                          {/* MovieCard handles navigation via internal button now */}
+                          <MovieCard
+                            movie={movie}
+                            isFavorite={isFav}
+                            handleFavoriteClick={handleFavoriteAction}
+                          />
+                        </div>
+                      );
+                    }) : (
+                      <h2 className="no-movies">No movies found.</h2>
+                    )}
+                  </div>
+                </>
+              } />
+
+              {/* --- FAVORITES ROUTE --- */}
+              <Route path="/favorites" element={
+                <div className="movie-container">
+                  {favorites.length > 0 ? (
+                    favorites.map((movie) => (
+                      <div key={movie.id} className="movie-wrapper">
+                        <MovieCard
+                          movie={movie}
+                          isFavorite={true}
+                          handleFavoriteClick={handleFavoriteAction}
+                        />
+                      </div>
+                    ))
+                  ) : (
+                    <h2 style={{ color: 'white', textAlign: 'center', width: '100%' }}>
+                      No favorites yet! Add some movies from Home page.
+                    </h2>
+                  )}
+                </div>
+              } />
+
+              {/* --- MOVIE DETAIL ROUTE --- */}
+              <Route path="/movie/:id" element={<MovieDetail />} />
+
+            </Routes>
+          </main>
+        </div>
       </div>
     </Router>
   );

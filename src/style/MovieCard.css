@@ -186,3 +186,34 @@
   color: var(--accent-color);
   background: rgba(233, 69, 96, 0.1);
 }
+
+@media (max-width: 600px) {
+  .movie-info {
+    padding: 0.8rem;
+  }
+
+  .movie-info h3 {
+    font-size: 0.8rem;
+  }
+
+  .tag {
+    padding: 0.2rem 0.4rem;
+    font-size: 0.7rem;
+  }
+
+  .overlay {
+    padding: 10px;
+  }
+
+  .hover-title {
+    font-size: 1rem;
+    margin-bottom: 5px;
+  }
+
+  .detail-btn,
+  .fav-btn-secondary {
+    padding: 8px;
+    font-size: 0.8rem;
+    margin-bottom: 10px;
+  }
+}

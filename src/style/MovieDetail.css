@@ -152,21 +152,60 @@
 }
 
 @media (max-width: 768px) {
+    .detail-content {
+        padding-top: 25vh;
+    }
+
+    .backdrop {
+        height: 50vh;
+    }
+
     .detail-flex {
         flex-direction: column;
         align-items: center;
+        gap: 20px;
     }
 
     .detail-poster {
-        width: 100%;
-        max-width: 300px;
+        width: 180px;
+        border-radius: 8px;
+        margin-top: -50px;
     }
 
     .detail-info {
         width: 100%;
+        padding: 20px;
     }
 
     .detail-title {
         font-size: 1.8rem;
+        text-align: center;
+    }
+
+    .detail-tagline {
+        text-align: center;
+        font-size: 1rem;
+    }
+
+    .detail-meta {
+        justify-content: center;
+        font-size: 0.9rem;
+    }
+
+    .detail-genres {
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    .release-year {
+        display: block;
+        text-align: center;
+        font-size: 1.5rem;
+        margin-top: 5px;
+    }
+
+    .detail-overview {
+        font-size: 1rem;
+        text-align: justify;
     }
 }

@@ -55,10 +55,25 @@
   color: #e94560;
 }
 
-@media (max-width: 600px) {
+@media (max-width: 768px) {
   .navbar {
-    padding: 1rem;
+    padding: 1rem 1.5rem;
     flex-direction: column;
     gap: 15px;
+  }
+
+  .navbar-links {
+    width: 100%;
+    justify-content: center;
+    gap: 10px;
+  }
+
+  .navbar-links a {
+    font-size: 0.9rem;
+    padding: 8px 12px;
+  }
+
+  .navbar-brand a {
+    font-size: 1.5rem;
   }
 }

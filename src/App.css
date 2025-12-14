@@ -21,7 +21,6 @@ body {
   min-height: 100vh;
 }
 
-/* Custom Scrollbar */
 ::-webkit-scrollbar {
   width: 10px;
 }
@@ -39,17 +38,15 @@ body {
   background: var(--accent-color);
 }
 
-/* Container */
 .root-container {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
 }
 
-/* Main Layout for Sidebar + Content */
 .main-layout {
   display: flex;
-  max-width: 1600px;
+  max-width: 1920px;
   margin: 0 auto;
   width: 100%;
 }
@@ -58,16 +55,26 @@ body {
   flex: 1;
   padding: 0 20px;
   transition: all 0.3s;
+  width: 100%;
 }
 
-/* Sidebar Styling */
+@media (max-width: 768px) {
+  .content {
+    padding: 0 10px;
+  }
+
+  .section-title {
+    padding: 0 10px;
+    font-size: 1.2rem;
+  }
+}
+
 .sidebar {
   width: 250px;
   background: rgba(22, 33, 62, 0.5);
   backdrop-filter: blur(10px);
-  padding: 2rem 1rem;
+  padding: 2rem 0;
   height: calc(100vh - 80px);
-  /* Height minus navbar approx */
   position: sticky;
   top: 80px;
   border-right: 1px solid rgba(255, 255, 255, 0.05);
@@ -78,8 +85,9 @@ body {
   color: var(--accent-color);
   font-size: 1.2rem;
   margin-bottom: 1.5rem;
-  padding-left: 10px;
-  border-left: 3px solid var(--accent-color);
+  padding-left: 20px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
 }
 
 .genre-list {
@@ -89,9 +97,9 @@ body {
 }
 
 .genre-list li {
-  padding: 12px 15px;
+  padding: 12px 20px;
   cursor: pointer;
-  border-radius: 8px;
+  border-radius: 0 30px 30px 0;
   margin-bottom: 5px;
   transition: all 0.2s;
   color: #ccc;
@@ -111,10 +119,8 @@ body {
   box-shadow: 0 4px 15px rgba(233, 69, 96, 0.3);
 }
 
-/* Mobile Toggle */
 .sidebar-toggle {
   display: none;
-  /* Hidden on desktop */
   position: fixed;
   bottom: 20px;
   right: 20px;
@@ -129,7 +135,6 @@ body {
   cursor: pointer;
 }
 
-/* Responsive Sidebar */
 @media (max-width: 900px) {
   .sidebar {
     position: fixed;
@@ -156,7 +161,6 @@ body {
   }
 }
 
-/* Sidebar Scrollbar */
 .sidebar::-webkit-scrollbar {
   width: 5px;
 }
@@ -167,7 +171,6 @@ body {
 }
 
 
-/* Search Section */
 .search-container {
   display: flex;
   justify-content: center;
@@ -223,24 +226,29 @@ body {
   background-color: #ff5e78;
 }
 
-/* Movie Grid */
 .movie-container {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
   gap: 30px;
   padding: 20px;
-  max-width: 1400px;
+  max-width: 100%;
   margin: 0 auto 50px;
   width: 100%;
+}
+
+@media (max-width: 600px) {
+  .movie-container {
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 15px;
+    padding: 10px;
+  }
 }
 
 .movie-wrapper {
   text-decoration: none;
   color: inherit;
   display: block;
-  /* Ensure it fills the grid cell */
   height: 100%;
-  /* Match grid cell height */
 }
 
 .movie-wrapper>a {
@@ -257,7 +265,7 @@ body {
 }
 
 .section-title {
-  max-width: 1200px;
+  max-width: 1500px;
   margin: 0 auto;
   padding: 0 20px;
   color: #fff;

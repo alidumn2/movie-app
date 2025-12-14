@@ -167,7 +167,7 @@ function AppContent() {
             } />
             <Route path="/favorites" element={
               <>
-                <h2 className="section-title" style={{ marginTop: '30px' }}>Favorite Movies</h2>
+                <h2 className="section-title" style={{ marginTop: '30px', maxWidth: '1800px' }}>Favorite Movies</h2>
                 <div className="movie-container">
                   {favorites.length > 0 ? (
                     favorites.map((movie) => (

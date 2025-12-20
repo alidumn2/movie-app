@@ -29,7 +29,7 @@ Before you begin, ensure you have the following installed on your machine:
 
 1.  **Clone the repository:**
     ```bash
-    git clone [https://github.com/your-username/movie-app.git](https://github.com/your-username/movie-app.git)
+    git clone [https://github.com/alidumn2/movie-app](https://github.com/alidumn2/movie-app)
     ```
 
 2.  **Navigate to the project directory:**

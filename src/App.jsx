@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import Navbar from './components/Navbar';
@@ -31,6 +31,7 @@ function AppContent() {
     }
   }, []);
 
+
   const getGenres = useCallback(async () => {
     try {
       const res = await axios.get(GENRE_LIST_API);
@@ -39,6 +40,7 @@ function AppContent() {
       console.error("Error fetching genres:", error);
     }
   }, []);
+
 
   useEffect(() => {
     getMovies(POPULAR_API);
@@ -54,6 +56,7 @@ function AppContent() {
     localStorage.setItem('react-movie-app-favorites', JSON.stringify(items));
   };
 
+
   const handleSearch = (term) => {
     setSearchTerm(term);
     setSelectedGenre(null);
@@ -63,6 +66,7 @@ function AppContent() {
       getMovies(POPULAR_API);
     }
   };
+
 
   const handleGenreClick = (genreId) => {
     const newGenreId = genreId === selectedGenre ? null : genreId;
@@ -77,6 +81,7 @@ function AppContent() {
     }
   };
 
+
   const handleFavoriteAction = (movie) => {
     const isAlreadyFav = favorites.some(fav => fav.id === movie.id);
     let newFavoritesList;
@@ -89,8 +94,10 @@ function AppContent() {
     saveToLocalStorage(newFavoritesList);
   };
 
+
   const showSidebar = location.pathname === '/';
 
+  
   return (
     <div className="root-container">
       <Navbar />
@@ -119,9 +126,6 @@ function AppContent() {
               </ul>
             </aside>
 
-            <button className="sidebar-toggle" onClick={() => setIsSidebarOpen(!isSidebarOpen)}>
-              {isSidebarOpen ? '✕' : '☰ Categories'}
-            </button>
           </>
         )}
 
@@ -165,6 +169,7 @@ function AppContent() {
                 </div>
               </>
             } />
+
             <Route path="/favorites" element={
               <>
                 <h2 className="section-title" style={{ marginTop: '30px', maxWidth: '1800px' }}>Favorite Movies</h2>

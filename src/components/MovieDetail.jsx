@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import axios from 'axios';
 import '../style/MovieDetail.css';
 import { useParams, Link } from 'react-router-dom';
